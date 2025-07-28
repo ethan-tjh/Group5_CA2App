@@ -32,3 +32,9 @@ app.use(express.static('public'));
 app.use(express.urlencoded({
     extended: false
 }));
+
+app.get('/viewPost/:id', checkAuthenticated, (req, res) => {
+    const {id} = req.params;
+    const isAdmin = req.session.user.role == 'admin';
+
+//pls continue below here, i'm still writing my section -jerome :')
