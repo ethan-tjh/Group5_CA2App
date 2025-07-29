@@ -6,17 +6,17 @@ app.get('/viewPost/:id', checkAuthenticated, (req, res) => {
     let params = [];
 
     if (isAdmin) {
-      sql = 'SELECT t.*, u.username FROM tasks t JOIN users u ON t.user_id = u.id WHERE 1=1';
+      sql = 'SELECT p.*, u.username FROM posts p JOIN users u ON p.user_id = u.id WHERE 1=1';
       if (search) {
-        sql += ' AND t.title LIKE ?';
+        sql += ' AND p.title LIKE ?';
         params.push(`%${search}%`);
       }
       if (status && status !== 'all') {
-        sql += ' AND t.status = ?';
+        sql += ' AND p.created_at = ?';
         params.push(status);
       }
     } else {
-      sql = 'SELECT * FROM tasks WHERE user_id = ?';
+      sql = 'SELECT * FROM posts WHERE user_id = ?';
       params.push(req.session.user.id);
     }
 
@@ -24,7 +24,7 @@ app.get('/viewPost/:id', checkAuthenticated, (req, res) => {
       if (err) {
         console.error(err);
         req.flash('error', 'Failed to load post');
-        return res.redirect('/');
+        return res.redirect('/homepage');
       }
       res.render('viewPost', {
         task: results[0],
