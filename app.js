@@ -13,6 +13,7 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
+
 const connection = mysql.createConnection({
     host: 'z41can.h.filess.io',
     port: 61002,
@@ -27,8 +28,14 @@ connection.connect((err) => {
     }
     console.log('Connected to MySQL database');
 });
+
+app.use(flash());
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use(express.urlencoded({
-    extended: false
-}));
+app.use(express.urlencoded({ extended: false }));
+
+// Routes
+
+// Starting the server
+const PORT = process.env.PORT || 61002;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
