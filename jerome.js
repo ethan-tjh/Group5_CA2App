@@ -9,7 +9,7 @@ app.get('/viewPost/:id', checkAuthenticated, (req, res) => {
       sql = 'SELECT t.*, u.username FROM tasks t JOIN users u ON t.user_id = u.id WHERE 1=1';
       if (search) {
         sql += ' AND t.title LIKE ?';
-        arams.push(%${search}%);
+        params.push(`%${search}%`);
       }
       if (status && status !== 'all') {
         sql += ' AND t.status = ?';
