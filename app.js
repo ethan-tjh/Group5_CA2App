@@ -15,11 +15,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const connection = mysql.createConnection({
-    host: 'z41can.h.filess.io',
-    port: 61002,
-    user: 'CA2Group5_satisfied',
-    password: '356693b4eecb61c0cd53d80999306bf2c9e34221',
-    database: 'CA2Group5_satisfied'
+    host: 'c237-all.mysql.database.azure.com',
+    port: 3306,
+    user: 'c237admin',
+    password: 'c2372025!',
+    database: 'c237_016_24027665'
   });
 connection.connect((err) => {
     if (err) {
@@ -408,5 +408,5 @@ app.post('/deletePost/:id', (req, res) => {
     });
 
 // Starting the server
-const PORT = process.env.PORT || 61002;
+const PORT = process.env.PORT || 3306;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
