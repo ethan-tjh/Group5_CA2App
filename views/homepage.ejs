@@ -1,14 +1,17 @@
-
-<form action="/homepage" method="GET" class="search-filter">
-  <input type="text" name="search" placeholder="Search posts..." value="<%= searchQuery %>">
-  <select name="category">
-    <option value="">All Categories</option>
-    <% categories.forEach(category => { %>
-      <option value="<%= category.id %>" 
-              <%= selectedCategory == category.id ? 'selected' : '' %>>
-        <%= category.name %>
-      </option>
-    <% }); %>
-  </select>
-  <button type="submit">Search</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Homepage</h1>
+        <p>Welcome, <%= users.username %> (<%= users.role %>)</p>
+        <% if (users.role === 'admin') { %>
+            <a href="/admin" class="btn btn-primary">Admin Dashboard</a>
+        <% } %>
+        <a href="/logout" class="btn btn-primary">Logout</a>
+    </div>
+</body>
+</html>
