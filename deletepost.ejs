@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts</title>
+</head>
+<body>
+    <h1>Posts</h1>
+
+    <% if (messages.success && messages.success.length > 0) { %>
+        <div style="color: green;"><%= messages.success[0] %></div>
+    <% } %>
+    <% if (messages.error && messages.error.length > 0) { %>
+        <div style="color: red;"><%= messages.error[0] %></div>
+    <% } %>
+
+    <% if (posts && posts.length > 0) { %>
+        <% posts.forEach(post => { %>
+            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                <h3><%= post.title %></h3>
+                <p><%= post.content %></p>
+                <form action="/deletePost/<%= post.id %>" method="POST" onsubmit="return confirm('Delete this post?');">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No posts found.</p>
+    <% } %>
+</body>
+</html>
