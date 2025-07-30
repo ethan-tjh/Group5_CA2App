@@ -45,8 +45,8 @@ app.use(session({
 
 // Routes
 // Login & Register (by Jiayi)
-app.get('/register', (req, res) => {
-    res.render('register', { title: 'RPConnect - Create Account' });
+app.get('/', (req, res) => {
+    res.render('login', {title: 'RPConnect'});
 });
 
 app.post('/login', (req, res) => {
@@ -111,6 +111,153 @@ app.post('/register', (req, res) => {
         res.redirect('/');
     });
 });
+
+// Password reset route
+app.get('/reset-password', async (req, res) => {
+    const { token } = req.query;
+    
+    try {
+        // Verify token is valid and not expired
+        const [rows] = await pool.query(
+            'SELECT * FROM password_resets WHERE token = ? AND expires_at > NOW()',
+            [token]
+        );
+        
+        if (rows.length === 0) {
+            return res.render('forgetpassword', {
+                error: 'Invalid or expired reset link',
+                token: null
+            });
+        }
+        
+        res.render('forgetpassword', { 
+            token, 
+            error: null,
+            showResetForm: true  // Add this flag to show the reset form in your EJS
+        });
+    } catch (err) {
+        console.error(err);
+        res.render('forgetpassword', {
+            error: 'An error occurred. Please try again.',
+            token: null
+        });
+    }
+});
+
+// Handle password reset submission
+app.post('/reset-password', async (req, res) => {
+    const { token, newPassword, confirmPassword } = req.body;
+    const errors = {};
+    
+    // Validation
+    if (!newPassword || newPassword.length < 8) {
+        errors.newPassword = 'Password must be at least 8 characters';
+    }
+    
+    if (newPassword !== confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+        return res.render('forgetpassword', {
+            token,
+            errors,
+            error: 'Please fix the errors below',
+            showResetForm: true
+        });
+    }
+    
+    try {
+        // Verify token again
+        const [resetRows] = await pool.query(
+            'SELECT user_id FROM password_resets WHERE token = ? AND expires_at > NOW()',
+            [token]
+        );
+        
+        if (resetRows.length === 0) {
+            return res.render('forgetpassword', {
+                token: null,
+                error: 'Invalid or expired reset link'
+            });
+        }
+        
+        const userId = resetRows[0].user_id;
+        
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        
+        // Update user password
+        await pool.query(
+            'UPDATE users SET password = ? WHERE id = ?',
+            [hashedPassword, userId]
+        );
+        
+        // Delete the used token
+        await pool.query(
+            'DELETE FROM password_resets WHERE token = ?',
+            [token]
+        );
+        
+        // Show success page
+        res.render('forgetpassword', { 
+            success: true,
+            message: 'Password updated successfully!'
+        });
+        
+    } catch (err) {
+        console.error(err);
+        res.render('forgetpassword', {
+            token,
+            error: 'An error occurred. Please try again.'
+        });
+    }
+});
+
+// API endpoint for AJAX version
+app.post('/api/reset-password', async (req, res) => {
+    const { token, newPassword } = req.body;
+    
+    try {
+        // Verify token
+        const [resetRows] = await pool.query(
+            'SELECT user_id FROM password_resets WHERE token = ? AND expires_at > NOW()',
+            [token]
+        );
+        
+        if (resetRows.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid or expired reset link'
+            });
+        }
+        
+        const userId = resetRows[0].user_id;
+        
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        
+        // Update user password
+        await pool.query(
+            'UPDATE users SET password = ? WHERE id = ?',
+            [hashedPassword, userId]
+        );
+        // Delete the used token
+        await pool.query(
+            'DELETE FROM password_resets WHERE token = ?',
+            [token]
+        );
+            
+        res.json({ success: true });
+            
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred. Please try again.'
+        });
+    }
+});
+
 
 // Homepage, View, Search and Filter (by Tristan)
 app.get('/homepage', async (req, res) => {
