@@ -45,8 +45,48 @@ app.use(session({
 
 // Routes
 // Login & Register (by Jiayi)
-app.get('/', (req, res) => {
-    res.render('login', {title: 'RPConnect'});
+app.get('/register', (req, res) => {
+    res.render('register', { title: 'RPConnect - Create Account' });
+});
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    const sql = 'SELECT * FROM users WHERE username = ?';
+    connection.query(sql, [username], (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            req.flash('error', 'Something went wrong. Please try again.');
+            return res.redirect('/');
+        }
+
+        // If user not found
+        if (results.length === 0) {
+            req.flash('error', 'Incorrect username or password.');
+            return res.redirect('/');
+        }
+
+        const user = results[0];
+
+        // Check password (you may be using SHA1 or bcrypt)
+        const checkPasswordSql = 'SELECT * FROM users WHERE username = ? AND password = SHA1(?)';
+        connection.query(checkPasswordSql, [username, password], (err, pwdResults) => {
+            if (err) {
+                console.error('Password check error:', err);
+                req.flash('error', 'Something went wrong. Please try again.');
+                return res.redirect('/');
+            }
+
+            if (pwdResults.length === 0) {
+                req.flash('error', 'Incorrect username or password.');
+                return res.redirect('/');
+            }
+
+            // Login success
+            req.session.user = pwdResults[0];
+            res.redirect('/dashboard'); // change to your actual dashboard route
+        });
+    });
 });
 
 app.get('/register', (req, res) => {
