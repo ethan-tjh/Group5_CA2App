@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Revisions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+        }
+
+        /* Data Table Styles */
+        .data-table {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-header h3 {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-actions button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .table-actions button i {
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f9f9f9;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            padding: 5px;
+            margin: 0 3px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .view-btn {
+            color: #3498db;
+        }
+
+        .restore-btn {
+            color: #2ecc71;
+        }
+
+        .delete-btn {
+            color: #e74c3c;
+        }
+
+        .no-results {
+            padding: 30px;
+            text-align: center;
+            color: #777;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .pagination button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .pagination button.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar would go here -->
+        <div class="main-content">
+            <!-- Header would go here -->
+            <div class="content-wrapper">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>Post Revisions</h3>
+                        <div class="table-actions">
+                            <button id="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                            <button id="export-btn"><i class="fas fa-download"></i> Export</button>
+                        </div>
+                    </div>
+                    
+                    <% if (revisions.length > 0) { %>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Revision ID</th>
+                                    <th>Post ID</th>        
+                                    <th>Editor</th>
+                                    <th>Edited At</th>
+                                    <th>Changes</th>
+                                    <th>Reason</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% revisions.forEach(revision => { %>
+                                    <tr>
+                                        <td>#<%= revision.id %></td>
+                                        <td>#<%= revision.post_id %></td>
+                                        <td><%= revision.editor.email %></td>
+                                        <td><%= new Date(revision.edited_at).toLocaleString() %></td>
+                                        <td>
+                                            <span class="badge badge-info">
+                                                <%= revision.old_title && revision.old_description ? 'Title & Desc' : 
+                                                    revision.old_title ? 'Title' : 'Description' %>
+                                            </span>
+                                        </td>
+                                        <td><%= revision.edit_reason || 'N/A' %></td>
+                                        <td>
+                                            <button class="action-btn view-btn" data-id="<%= revision.id %>">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="action-btn restore-btn" data-id="<%= revision.id %>">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                            <button class="action-btn delete-btn" data-id="<%= revision.id %>">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                        
+                        <div class="pagination">
+                            <% if (pagination.currentPage > 1) { %>
+                                <a href="?page=<%= pagination.currentPage - 1 %><%= searchQuery ? '&search=' + searchQuery : '' %>">
+                                    <button><i class="fas fa-angle-left"></i></button>
+                                </a>
+                            <% } %>
+                            
+                            <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+                                <a href="?page=<%= i %><%= searchQuery ? '&search=' + searchQuery : '' %>">
+                                    <button class="<%= i === pagination.currentPage ? 'active' : '' %>">
+                                        <%= i %>
+                                    </button>
+                                </a>
+                            <% } %>
+                            
+                            <% if (pagination.currentPage < pagination.totalPages) { %>
+                                <a href="?page=<%= pagination.currentPage + 1 %><%= searchQuery ? '&search=' + searchQuery : '' %>">
+                                    <button><i class="fas fa-angle-right"></i></button>
+                                </a>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <div class="no-results">
+                            <p>No revisions found</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
