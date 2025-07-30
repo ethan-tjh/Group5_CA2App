@@ -45,9 +45,39 @@ app.use(session({
 
 // Routes
 // Login & Register (by Jiayi)
-app.get('/', (req, res) => {
-    res.render('login', {title: 'RPConnect'});
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    connection.query(sql, [email], async (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.render('login', { title: 'RPConnect', error: 'Internal server error' });
+        }
+
+        if (results.length === 0) {
+            return res.render('login', { title: 'RPConnect', error: 'Invalid email or password' });
+        }
+
+        const user = results[0];
+
+        // For plain text password comparison (NOT recommended for production):
+        if (password !== user.password) {
+            return res.render('login', { title: 'RPConnect', error: 'Invalid email or password' });
+        }
+
+        // If using bcrypt:
+        // const match = await bcrypt.compare(password, user.password);
+        // if (!match) {
+        //     return res.render('login', { title: 'RPConnect', error: 'Invalid email or password' });
+        // }
+
+        // Successful login
+        res.redirect('/homepage');
+    });
 });
+
+module.exports = app;
 
 app.get('/register', (req, res) => {
     res.render('register', { title: 'RPConnect - Create Account' });
