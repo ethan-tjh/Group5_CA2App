@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPConnect - Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rp-green: #006341;
+            --rp-green-light: #008050;
+            --rp-green-dark: #004d33;
+            --rp-black: #121212;
+            --rp-white: #ffffff;
+            --rp-gray: #f5f5f5;
+            --rp-light-gray: #e0e0e0;
+            --error-red: #ff4444;
+            --success-green: #00C851;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--rp-gray);
+            color: var(--rp-black);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--rp-green) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, var(--rp-green-light) 0%, transparent 50%);
+        }
+
+        .registration-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--rp-white);
+            padding: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 99, 65, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 99, 65, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .register-header {
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .register-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--rp-black);
+            margin-bottom: 10px;
+        }
+
+        .register-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-form {
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--rp-black);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--rp-light-gray);
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+            background-color: var(--rp-gray);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--rp-green);
+            box-shadow: 0 0 0 2px rgba(0, 99, 65, 0.2);
+            background-color: var(--rp-white);
+        }
+
+        .form-control.error {
+            border-color: var(--error-red);
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+        }
+
+        .form-control.success {
+            border-color: var(--success-green);
+            box-shadow: 0 0 0 2px rgba(0, 200, 81, 0.2);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--rp-green);
+            color: var(--rp-white);
+            border: none;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-register:hover {
+            background-color: var(--rp-green-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-register:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-footer a {
+            color: var(--rp-green);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Profile picture upload styles */
+        .profile-picture {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .profile-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--rp-light-gray);
+            margin: 0 auto 15px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--rp-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .profile-preview .initials {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--rp-green);
+            display: none;
+        }
+
+        .profile-preview .upload-icon {
+            font-size: 24px;
+            color: var(--rp-green);
+        }
+
+        .upload-btn {
+            display: block;
+            text-align: center;
+            margin: 0 auto;
+            padding: 8px 16px;
+            background-color: transparent;
+            color: var(--rp-green);
+            border: 1px solid var(--rp-green);
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: rgba(0, 99, 65, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .optional-badge {
+            background-color: var(--rp-light-gray);
+            color: #666;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+
+        .tech-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 99, 65, 0.1);
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .registration-container {
+                padding: 40px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <!-- Dynamic background elements -->
+        <div class="tech-circle" style="width: 200px; height: 200px; top: -50px; right: -50px;"></div>
+        <div class="tech-circle" style="width: 150px; height: 150px; bottom: 30px; left: 30px;"></div>
+        
+        <div class="register-header">
+            <h1>Create Account</h1>
+            <p>Join RPConnect – Your voice matters. Share your thoughts, connect with others, and be part of the RP community.</p>
+        </div>
+        
+        <form action="/register" method="POST" class="register-form" id="registrationForm">
+            <div class="profile-picture">
+                <div class="profile-preview" id="profilePreview">
+                    <div class="upload-icon">+</div>
+                    <div class="initials"></div>
+                    <img id="profile-pic" name="profile-pic" src="" alt="Profile Preview">
+                </div>
+                <label for="profileUpload" class="upload-btn">Upload Profile Picture <span class="optional-badge">OPTIONAL</span></label>
+                <input type="file" id="profileImage" name="profileImage" class="file-input" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="username">USERNAME</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="e.g. johndoe" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">RP EMAIL</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="your.id@rp.edu.sg" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">PASSWORD</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Create a strong passcode (min 8 characters)" required>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">CONFIRM PASSCODE</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter your passcode" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+            
+            <button type="submit" class="btn-register" id="registerBtn">CREATE ACCOUNT</button>
+            
+            <div class="login-footer">
+                <p>Already have an account? <a href="/">Sign in</a></p>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create additional dynamic tech circles
+            const container = document.querySelector('.registration-container');
+            for (let i = 0; i < 2; i++) {
+                const circle = document.createElement('div');
+                circle.classList.add('tech-circle');
+                
+                const size = Math.random() * 100 + 50;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const opacity = Math.random() * 0.1 + 0.05;
+                
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${posX}%`;
+                circle.style.top = `${posY}%`;
+                circle.style.opacity = opacity;
+                circle.style.background = `rgba(0, 99, 65, ${opacity})`;
+                
+                container.appendChild(circle);
+            }
+            
+            // Profile picture upload functionality
+            const profileUpload = document.getElementById('profileUpload');
+            const profilePreview = document.getElementById('profilePreview');
+            const profileImage = document.getElementById('profileImage');
+            const uploadIcon = profilePreview.querySelector('.upload-icon');
+            const initialsDisplay = profilePreview.querySelector('.initials');
+            
+            profileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileImage.src = e.target.result;
+                        profileImage.style.display = 'block';
+                        uploadIcon.style.display = 'none';
+                        initialsDisplay.style.display = 'none';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Generate initials when username is entered
+            const usernameInput = document.getElementById('username');
+            usernameInput.addEventListener('input', function() {
+                if (profileImage.style.display !== 'block' && usernameInput.value.trim() !== '') {
+                    const names = usernameInput.value.trim().split(' ');
+                    let initials = '';
+                    if (names.length > 0) {
+                        initials = names[0].charAt(0).toUpperCase();
+                        if (names.length > 1) {
+                            initials += names[names.length - 1].charAt(0).toUpperCase();
+                        }
+                    }
+                    initialsDisplay.textContent = initials;
+                    initialsDisplay.style.display = 'flex';
+                    uploadIcon.style.display = 'none';
+                } else if (usernameInput.value.trim() === '' && profileImage.style.display !== 'block') {
+                    initialsDisplay.style.display = 'none';
+                    uploadIcon.style.display = 'flex';
+                }
+            });
+            
+            // Password validation elements
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Real-time password validation
+            [passwordInput, confirmPasswordInput].forEach(input => {
+                input.addEventListener('input', validatePasswords);
+            });
+            
+            function validatePasswords() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                // Clear previous states
+                passwordInput.classList.remove('error', 'success');
+                confirmPasswordInput.classList.remove('error', 'success');
+                passwordError.style.display = 'none';
+                confirmPasswordError.style.display = 'none';
+                
+                // Validate password strength
+                if (password.length > 0 && password.length < 8) {
+                    passwordInput.classList.add('error');
+                    passwordError.textContent = 'Password must be at least 8 characters';
+                    passwordError.style.display = 'block';
+                    return false;
+                }
+                
+                // Validate password match
+                if (confirmPassword.length > 0) {
+                    if (password !== confirmPassword) {
+                        confirmPasswordInput.classList.add('error');
+                        confirmPasswordError.textContent = 'Passwords do not match';
+                        confirmPasswordError.style.display = 'block';
+                        return false;
+                    } else {
+                        confirmPasswordInput.classList.add('success');
+                    }
+                }
+                
+                return true;
+            }
+            
+            // Form submission
+            const form = document.getElementById('registrationForm');
+            form.addEventListener('submit', function(e) {
+                // e.preventDefault();
+                
+                const username = usernameInput.value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                // Validate all fields
+                if (!username || !email || !password || !confirmPassword) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Validate passwords
+                if (!validatePasswords()) {
+                    return;
+                }
+                
+                // Disable button during submission
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Creating Account...';
+                registerBtn.style.backgroundColor = '#004d33';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    registerBtn.textContent = 'Account Created!';
+
+                    // Show success message
+                    alert(`Welcome to RPConnect, ${username}!\n\nYour account has been successfully created.`);
+                    
+                    // Redirect to login page after short delay
+                    setTimeout(() => {
+                        window.location.href = "/"; // Redirect to login
+                    }, 1000);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verified | Republic Polytechnic</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        
+        .success-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 350px;
+            border-top: 5px solid #00a651; /* RP green */
+            text-align: center;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #000000;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .logo span {
+            color: #00a651;
+        }
+        
+        .success-icon {
+            color: #00a651;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #00a651;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #00a651;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #008a43; /* Darker green */
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="logo">
+            <h1>REPUBLIC <span>POLYTECHNIC</span></h1>
+        </div>
+        
+        <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00a651" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        
+        <h2>OTP Verified!</h2>
+        <p>Email successfully verified for: <strong><%= email %></strong></p>
+        
+        <a href="/" class="btn">Back to Login</a>
+    </div>
+</body>
+</html>
