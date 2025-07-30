@@ -45,6 +45,10 @@ app.use(session({
 
 // Routes
 // Login & Register (by Jiayi)
+app.get('/', (req, res) => {
+    res.render('login', {title: 'RPConnect'});
+});
+
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -78,7 +82,6 @@ app.post('/login', (req, res) => {
 });
 
 module.exports = app;
-
 app.get('/register', (req, res) => {
     res.render('register', { title: 'RPConnect - Create Account' });
 });
