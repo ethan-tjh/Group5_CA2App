@@ -112,6 +112,10 @@ app.post('/register', (req, res) => {
     });
 });
 
+app.get('/forgetPassword', (req, res) => {
+    res.render('forgetPassword', {title: 'RPConnect - Forget Password'});
+});
+
 // Password reset route
 app.get('/reset-password', async (req, res) => {
     const { token } = req.query;
